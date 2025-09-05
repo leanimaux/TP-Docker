@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  web:
+    build: .              # construit ton image Flask à partir du Dockerfile
+    ports:
+      - "5000:5000"       # expose Flask en local sur le port 5000
+    depends_on:
+      - mongo             # attend que Mongo soit lancé
+
+  mongo:
+    image: mongo:6.0      # utilise l’image officielle MongoDB
+    ports:
+      - "27017:27017"     # expose Mongo pour que Flask puisse s’y connecter
