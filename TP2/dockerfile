@@ -1,20 +1,28 @@
-FROM node:18-alpine
+# -------- Étape 1 : Build --------
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
+RUN npm run build
 
-RUN adduser -S nodejs
-RUN chown -R nodejs /app
+# -------- Étape 2 : Run --------
+FROM node:18-alpine AS runner
 
-USER nodejs
-EXPOSE 3000 4000 5000
+WORKDIR /app
 
-ENV NODE_ENV=production
+COPY package*.json ./
 RUN npm ci --only=production
 
-CMD ["node", "server.js"]
+COPY --from=builder /app ./dist
+
+EXPOSE 3000 4000 5000
+
+RUN adduser -S nodejs
+USER nodejs
+
+# Lancer l’appli
+CMD ["node", "dist/server.js"]
