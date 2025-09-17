@@ -2,7 +2,6 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copier seulement les fichiers nécessaires à l'installation des deps
 COPY package*.json ./
 
 RUN npm install
@@ -11,9 +10,8 @@ COPY . .
 
 EXPOSE 3000 4000 5000
 
-ENV NODE_ENV=development
-
-RUN npm run build
+ENV NODE_ENV=production
+RUN npm ci --only=production
 
 USER root
 
