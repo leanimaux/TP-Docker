@@ -8,11 +8,13 @@ RUN npm install
 
 COPY . .
 
+RUN adduser -S nodejs
+RUN chown -R nodejs /app
+
+USER nodejs
 EXPOSE 3000 4000 5000
 
 ENV NODE_ENV=production
 RUN npm ci --only=production
-
-USER root
 
 CMD ["node", "server.js"]
